@@ -20,13 +20,12 @@ class User:
         return f'<User: {self.username}>'
 
 users = []
-users.append(User(id=1, username='Anthony', password='password'))
-users.append(User(id=2, username='Becca', password='secret'))
-users.append(User(id=3, username='Carlos', password='somethingsimple'))
-
+users.append(User(id=1, username='A', password='A'))
+users.append(User(id=2, username='B', password='B'))
+users.append(User(id=3, username='C', password='C'))
 
 app = Flask(__name__)
-app.secret_key = 'somesecretkeythatonlyishouldknow'
+app.secret_key = 'sfdgsdfhsfdg5trgdfg'
 
 @app.before_request
 def before_request():
