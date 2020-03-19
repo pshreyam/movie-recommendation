@@ -1,3 +1,5 @@
+#This is a copy of code from another repository/user and not intended for any copyright infringement.
+
 from flask import (
     Flask,
     g,
