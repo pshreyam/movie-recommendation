@@ -22,3 +22,4 @@ def mission():
 
 if __name__=="__main__":
     app.run(host='0.0.0.0',debug=True)
+    #run through ip address followed by the port number
