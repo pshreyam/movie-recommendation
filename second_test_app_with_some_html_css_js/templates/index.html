@@ -1,0 +1,150 @@
+{%extends 'base.html'%} {%block form%}
+<div class="form-box">
+    <div class="button-box">
+        <div id="btn"></div>
+        <button type="button" class="toggle-btn" onclick="login()">Login</button>
+        <button type="button" class="toggle-btn" onclick="register()">Register</button>
+    </div>
+    <div class="social-icons">
+        <img src="{{url_for('static',filename='images/fb.png')}}">
+        <img src="{{url_for('static',filename='images/tw.png')}}">
+        <img src="{{url_for('static',filename='images/gp.png')}}">
+    </div>
+    <form id="login" class="input-group">
+        <br>
+        <input type="text" class="input-field" placeholder="Username" required><br>
+        <input type="password" class="input-field" placeholder="Password" required><br><br>
+        <input type="checkbox" class="checkbox" value="remember" id="rem">
+        <label for="rem" class="check-label">Remember me</label><br><br>
+        <button type="button" class="submit-btn">Log in</button>
+        <button type="button" class="redirect-btn" id="password-btn">Forgot Password</button>
+    </form>
+    <form id="register" class="input-group">
+        <input type="text" class="input-field" placeholder="Username" required><br>
+        <input type="email" class="input-field" placeholder="Email" required><br>
+        <input type="password" class="input-field" placeholder="Password" required><br><br>
+        <input type="checkbox" class="checkbox" value="remember" id="agree">
+        <label for="agree" class="check-label">I agree to the terms and conditions.</label><br><br>
+        <button type="button" class="submit-btn">Register</button>
+    </form>
+</div>
+
+<div id="forgot-password">
+    <form>
+        <h1>Reset Password</h1>
+        <input type="text" class="input-field" placeholder="Username" required><br>
+        <input type="email" class="input-field" placeholder="Email" required><br>
+        <input type="password" class="input-field" placeholder="Old Password" required><br>
+        <button type="button" class="submit-btn">Reset Password</button>
+    </form>
+</div>
+{%endblock%} {%block feed%}
+<div class="feeds">
+    <div id="feeds-label">Latest Updates</div>
+
+    <div class="feed-content">
+        <div class="feed-head">
+            <div class="feed-title">Wahab Riaz, Mohammad Amir 'left us at the wrong time' - Waqar Younis</div>
+            <span class="feed-author">Umar Farooq</span>
+            <span class="feed-date">2020/04/06</span>
+        </div>
+
+        <div class="feed-description">
+            <p>
+                The way Mohammad Amir and Wahab Riaz "ditched" the Pakistan Test set-up, retiring from the format to focus on white-ball cricket, ahead of the matches against Australia last year left bowling coach Waqar Younis hurt but not holding a grudge.
+            </p>
+            <p>
+                "Just before the Australia series, they ditched us and we had the only choice to pick youngsters," Younis told presspersons during a video conference arranged by the PCB. "We were the new management and decided to go on with taking in the younger lot
+                and groom them. Misbah [-ul-Haq, the head coach and chief selector] spoke about this earlier about having a policy about players deciding what and what not to play.
+            </p>
+        </div>
+    </div>
+
+    <div class="feed-content">
+        <div class="feed-head">
+            <div class="feed-title">Hello1</div>
+            <span class="feed-author">Anthony</span>
+            <span class="feed-date">2020/04/06</span>
+        </div>
+        <div class="feed-description">
+            <p>
+                Hello this is the best thing ever.Hello this is the best thing ever. Hello this is the best thing ever. Hello this is the best thing ever. Hello this is the best thing ever. Hello this is the best thing ever. Hello this is the best thing ever. Hello this
+                is the best thing ever.
+            </p>
+        </div>
+    </div>
+
+    <div class="feed-content">
+        <div class="feed-head">
+            <div class="feed-title">Sachin Tendulkar the cynosure as India start favourites against arch-rivals Pakistan</div>
+            <span class="feed-author">Saurabh Somani</span>
+            <span class="feed-date">2020/04/06</span>
+        </div>
+        <div class="feed-description">
+            <p>
+                It has become a bit of a trend to have one of the showpieces matches of the World Cup around one month into the tournament. From a logistics and broadcasting point of view it makes sense: either India v Pakistan injects new life into a tournament that
+                might be flagging a bit, or it boosts an already high-flying tournament further. In 1996 and 1999, the match up happened after the group stages, and so owed a bit to luck. This time, both India and Pakistan are in the same group, and the
+                end of the first round is in sight.
+            </p>
+        </div>
+    </div>
+
+</div>
+{%endblock%} {%block script%}
+<script>
+    var login_form = document.getElementById('login');
+    var register_form = document.getElementById('register');
+    var reset_password_form = document.getElementById('forgot-password');
+    var button_select = document.getElementById('btn');
+    var remember_checkbox = document.getElementById('rem');
+    var agree_checkbox = document.getElementById('agree');
+    var contact = document.getElementById('contact');
+    var mybutton = document.getElementById("myBtn");
+    var forgot_password_btn = document.getElementById('password-btn');
+
+    function login() {
+        login_form.style.left = "50px";
+        register_form.style.left = "-300px";
+        button_select.style.left = "0px";
+        agree_checkbox.check = false;
+    }
+
+    function register() {
+        login_form.style.left = "-300px";
+        register_form.style.left = "50px";
+        button_select.style.left = "110px";
+        remember_checkbox.checked = false;
+    }
+
+    function contact_alert() {
+        alert("Contact:\nProject\n98********");
+    }
+
+    window.onscroll = function() {
+        scrollFunction()
+    };
+
+    function scrollFunction() {
+        if ((document.documentElement.scrollTop > 20) || (document.body.scrollTop = 0)) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+
+    forgot_password_btn.onclick = function() {
+        reset_password_form.style.display = "block";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == reset_password_form) {
+            reset_password_form.style.display = "none";
+        }
+    }
+</script>
+{%endblock%}
