@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CORONA MOVIES</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/movies.css')}}">
+</head>
+<body>
+<div class="container">
+<div class="nav-bar">
+    <ul>
+        <li><a href="{{url_for('movies')}}/action">Action</a></li>
+        <li><a href="{{url_for('movies')}}/crime">Crime</a></li>
+        <li><a href="{{url_for('movies')}}/romance">Romance</a></li>
+        <li><a href="{{url_for('movies')}}/western">Western</a></li>
+        <li><a href="{{url_for('movies')}}/sports">Sports</a></li>
+        <li><a href="{{url_for('movies')}}/documentary">Documentary</a></li>
+        <li><a href="{{url_for('movies')}}/drama">Drama</a></li>
+        <li><a href="{{url_for('movies')}}/horror">Horror</a></li>
+        <li><a href="{{url_for('movies')}}/kids">Kids</a></li>
+        <li><a href="{{url_for('movies')}}">Top 100 Imdb movies</a></li>
+        <li id="search-link"><a href="{{url_for('search')}}">Search</a></li>
+    </ul>
+</div>
+<div class="header">MOVIES (Top {{movies|length}} {{category.upper()}} movies)</div>
+<div class="movies-list">
+{% for items in movies%}
+    <div class="movies" tabindex="{{items.generate_content().id}}">
+        <a href="/movie-details/{{category}}/{{items.generate_content().id}}">
+            <div class="title" title="{{items.generate_content().title}}">{{items.generate_content().title}}</div>
+        </a>
+        <div class="director">{{items.generate_content().director.title()}}</div>
+        <div class="release-date">{{items.generate_content().release_year}}</div>
+        <div class="url-box">
+            <div class="url">
+                {%if items.generate_content().trailer_url %}
+                    <a href="{{items.generate_content().trailer_url}}" target="_blank">Trailer</a>
+                {%else%}
+                    No Trailer
+                {%endif%}
+            </div>
+            <div class="url">
+                {%if items.generate_content().movie_url %}
+                    <a href="{{items.generate_content().movie_url}}" target="_blank">Movie</a>
+                {%else%}
+                    No Movie
+                {%endif%}
+            </div>
+        </div>
+    </div>
+{%endfor%}
+</div>
+</div>
+</body>
+</html>

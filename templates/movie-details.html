@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CORONA MOVIES</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/movie-details.css')}}">
+</head>
+<body>
+<div class="container">
+<div class="nav-bar">
+    <ul>
+        <li><a href="{{url_for('movies')}}/action">Action</a></li>
+        <li><a href="{{url_for('movies')}}/crime">Crime</a></li>
+        <li><a href="{{url_for('movies')}}/romance">Romance</a></li>
+        <li><a href="{{url_for('movies')}}/western">Western</a></li>
+        <li><a href="{{url_for('movies')}}/sports">Sports</a></li>
+        <li><a href="{{url_for('movies')}}/documentary">Documentary</a></li>
+        <li><a href="{{url_for('movies')}}/drama">Drama</a></li>
+        <li><a href="{{url_for('movies')}}/horror">Horror</a></li>
+        <li><a href="{{url_for('movies')}}/kids">Kids</a></li>
+        <li><a href="{{url_for('movies')}}">Top 100 Imdb movies</a></li>
+        <li id="search-link"><a href="{{url_for('search')}}">Search</a></li>
+    </ul>
+</div>
+<div class="header">{{movie.generate_content().title}}</div>
+<div class="movie">
+    <img src="data:;base64,{{movie.generate_content().image}}"/>
+    Director: {{movie.generate_content().director.title()}}<br><br>
+    Synopsis: {{movie.generate_content().synopsis}}<br><br>
+    Cast: {{',\n'.join(movie.generate_content().cast.split('\r\n'))}}<br><br>
+    Imdb: {{movie.generate_content().imdb_rating}} <br><br>
+    Release Date: {{movie.generate_content().release_year}}<br><br>
+    Genre: {{' / '.join(movie.generate_content().genre)}}<br><br>
+    Trailer: <a href="{{movie.generate_content().trailer_url}}" target="_blank">{{movie.generate_content().trailer_url}}</a><br><br>
+    Movie:  <a href="{{movie.generate_content().movie_url}}" target="_blank">{{movie.generate_content().movie_url}}</a><br><br>
+</div>
+</div>
+</body>
+</html>
