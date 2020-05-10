@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CORONA MOVIES</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/search.css')}}">
+</head>
+<body>
+    <div class="container">
+        <div class="nav-bar">
+            <ul>
+                <li><a href="{{url_for('movies')}}/action">Action</a></li>
+                <li><a href="{{url_for('movies')}}/crime">Crime</a></li>
+                <li><a href="{{url_for('movies')}}/romance">Romance</a></li>
+                <li><a href="{{url_for('movies')}}/western">Western</a></li>
+                <li><a href="{{url_for('movies')}}/sports">Sports</a></li>
+                <li><a href="{{url_for('movies')}}/documentary">Documentary</a></li>
+                <li><a href="{{url_for('movies')}}/drama">Drama</a></li>
+                <li><a href="{{url_for('movies')}}/horror">Horror</a></li>
+                <li><a href="{{url_for('movies')}}/kids">Kids</a></li>
+                <li><a href="{{url_for('movies')}}">Top 100 Imdb movies</a></li>
+                <li id="search-link"><a href="{{url_for('search')}}">Search</a></li>
+            </ul>
+        </div>
+        <div class="header">SEARCH MOVIES</div>
+        <div class="form">
+            <form method="post">
+                <input id="search-bar" type="text" name="searchItem" placeholder="Search Movie" size='200'>
+                <select name="searchCategory" class="category-movies">
+                    {%for item in searchCategory%}
+                        {%if item=="imdb"%}
+                            <option value="{{item}}" selected="selected">{{item.title()}}</option>
+                        {%elif item=="southindian"%}
+                            <option value="{{item}}">South Indian</option>
+                        {%else%}
+                            <option value="{{item}}">{{item.title()}}</option>
+                        {%endif%}
+                    {%endfor%}
+                </select>
+                <input type="submit" value="Search">
+            </form>
+        </div>
+        <div class="message">
+        {%if searchResult%}
+            {{searchResult|length}} movies found.
+        {%else%}
+            0 movies found. Please try again!!!
+        {%endif%}
+        </div>
+        <div class="movies-list">
+        {%if searchResult%}
+            {% for items in searchResult%}
+                <div class="movies" tabindex="{{items.generate_content().id}}">
+                    <a href="/movie-details/{{currentCategory}}/{{items.generate_content().id}}">
+                        <div class="title" title="{{items.generate_content().title}}">{{items.generate_content().title}}</div>
+                    </a>
+                    <div class="director">{{items.generate_content().director.title()}}</div>
+                    <div class="release-date">{{items.generate_content().release_year}}</div>
+                    <div class="url-box">
+                        <div class="url">
+                            {%if items.generate_content().trailer_url %}
+                                <a href="{{items.generate_content().trailer_url}}" target="_blank">Trailer</a>
+                            {%else%}
+                                No Trailer
+                            {%endif%}
+                        </div>
+                        <div class="url">
+                            {%if items.generate_content().movie_url %}
+                                <a href="{{items.generate_content().movie_url}}" target="_blank">Movie</a>
+                            {%else%}
+                                No Movie
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+            {%endfor%}
+        {%endif%}
+        </div>
+    </div>
+    <script>
+        const search_bar=document.getElementById('search-bar');
+        const form=document.querySelector('form');
+
+        list=[" ","'","\"",".","%","&","@","$","^","*","(",")",";",":","/","<",">",",","?"];
+        
+        form.addEventListener('submit',event=>{
+            var i=0;
+            for (i=0;i<list.length;i++){
+                if(search_bar.value.trim().includes(list[i])){
+                    event.preventDefault();
+                    search_bar.value="";
+                    console.log("error");
+                }
+            }
+        });
+    </script>
+</body>
+</html>
