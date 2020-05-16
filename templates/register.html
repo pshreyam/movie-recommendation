@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <title>CORONA MOVIES</title>
+	    <meta name="description" content="">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel='icon' href="{{url_for('static',filename='img/logo.png')}}" type='image/x-icon'>
+	</head>
+	<body>
+		<style>
+			*{
+				box-sizing: border-box;
+				margin:0;
+				padding:0;
+			}
+			.container{
+				width:100%;
+				height:100%;
+				position:absolute;
+			}			
+			.login-box{
+				background-color:blue;
+				width:600px;
+				height:600px;
+				position:absolute;
+				left:50%;
+				top:50%;
+				transform: translate(-50%,-50%);
+				border-radius:20px;
+				box-shadow:0 0 20px 5px black;
+			}
+			.login-box .name{
+				position:absolute;
+				top:80px;
+				left:50%;
+				width:100px auto;
+				height:40px;
+				transform:translateX(-50%);
+				color:white;
+				font-size:34px;
+				user-select: none;
+			}
+			.login-box .logobox{
+				position:absolute;
+				top:10px;
+				left:50%;
+				width:70px;
+				height:70px;
+				border-radius:50%;
+				border:1px solid black;
+				transform:translateX(-50%);
+				background-color:white;
+				user-select: none;
+				box-shadow: 0 0 20px 0 #000;
+			}
+			.login-box .logobox img{
+				padding:5%;
+				width:95%;
+				height:95%;
+				user-select: none;
+			}
+			.login-box .input-area{
+				width:80%;
+				height:60%;
+				position:absolute;
+				top:120px;
+				left:10%;	
+				display:inline-grid;			
+			}
+			.login-box #error{
+				width:80%;
+				height:25px;
+				position:absolute;
+				top:83%;
+				left:10%;
+				color:white;
+				font-size: 16px;
+				text-align:center;
+			}
+			.login-box input[type=submit]{
+				width:55%;
+				height:40px;
+				position:absolute;
+				top:90%;
+				left:15%;
+				border-radius:6px;		
+				cursor:pointer;		
+			}
+			.login-box .link{
+				color:black;
+				text-decoration:none;
+				border:1px solid #ddd;
+				width:15%;
+				height:40px;
+				position:absolute;
+				top:90%;
+				left:75%;
+				border-radius:6px;
+				padding:10px;
+				background-color: #eee;
+				box-shadow: 0 0 10px 0 inset #000;
+			}
+			.login-box .input-area input[type=text]{
+				width:100%;
+				height:90%;
+				margin:5px 0;
+				border-radius:6px;
+				padding:0 10px;
+			}	
+			.login-box .input-area input[type=password]{
+				width:100%;
+				height:90%;
+				margin:5px 0;
+				border-radius:6px;
+				padding:0 10px;
+			}
+			.login-box .input-area input[type=email]{
+				width:100%;
+				height:90%;
+				margin:5px 0;
+				border-radius:6px;
+				padding:0 10px;
+			}	
+			.login-box .input-area .gender-box{
+				width:100%;
+				height:90%;
+				margin:5px 0;
+				padding:10px 10px;
+				font-size: 20px;
+			}		
+			.login-box .input-area input[type=radio]{
+				width:17px;
+				height:90%px;
+				padding:10px;
+			}
+			.login-box .input-area label{
+				color:white;
+				user-select: none;
+			}		
+		</style>
+		<div class="container">
+			<div class="login-box">
+				<form action="" method="post">
+					<a href='/'>
+						<div class="logobox">
+							<img src="./static/img/logo.png" />
+						</div>
+					</a>
+					<div class="name">
+						Register
+					</div>
+					<div class ="input-area">
+
+						<!--User FullName-->
+						<input type="text" value="" name="fname" id="fname" placeholder="First Name" maxlength="30" required spellcheck="false">
+						<input type="text" value="" name="lname" id="lname" placeholder="Last Name" maxlength="30" required spellcheck="false">
+
+						<!--Username-->
+						<input type="text" value="" name="uname" id="uname" placeholder="Username" maxlength="30" required spellcheck="false">
+
+						<!--User Gender-->
+						<div class="gender-box">
+							<label for="male">Male</label>
+							<input type="radio" value="M" name="gender" id="male" required>
+							<label for="female">Female</label>
+							<input type="radio" value="F" name="gender" id=
+							"female" required>
+						</div>
+
+						<!--Email-->
+						<input type="email" value="" name="email" id="email" placeholder="Email-Id" spellcheck="false" required>
+
+						<!--Nationality-->
+						<input type="text" value="" name="nation" id="nation" placeholder="Nationality" spellcheck="false" required>
+
+						<!--Password-->
+						<input type="password" value="" name="pwd" id="pwd" placeholder="Enter Password" required>
+						<input type="password" value="" name="repwd" id="repwd" placeholder="Re-Enter Password" required>
+
+					</div>
+					<input type="submit" value="Register">
+					<a href='/login' class='link'>or Login</a>
+					<span id='error'>
+						{%if error%}
+							{{error}}
+						{%else%}
+							Register to continue.
+						{%endif%}
+					</span>
+				</form>
+			</div>
+		</div>
+	<body>
+</html>
