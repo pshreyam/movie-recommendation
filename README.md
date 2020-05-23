@@ -1,10 +1,10 @@
 # CommendMovies
 
 ## Movies Page
-![Movies]("/snapshots/movies.jpg")
+![](/snapshots/movies.JPG)
 ## Movie Details Page
-![Movie-Details]("/snapshots/movies.jpg")
+![](/snapshots/movies.JPG)
 ## Movie Search
-![Movie-Search]("/snapshots/movie-search.jpg")
+![](/snapshots/movie-search.JPG)
 
 
