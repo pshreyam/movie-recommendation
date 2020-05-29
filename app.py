@@ -6,7 +6,7 @@ try:
         handleRegister,
     )
 except ImportError:
-    print("Couldn't load loadMovies module.")
+    print("Couldn't load module.")
 
 from flask import (
     Flask,
@@ -15,6 +15,7 @@ from flask import (
     render_template,
     request,
     session,
+    make_response
 )
 
 app = Flask(__name__)
@@ -73,6 +74,7 @@ def login():
 def movies(category = "imdb"):
     movies = loadMovies.loadMovies(category)
     return render_template('movies.html',movies=movies,category=category)
+
 
 @app.route("/movie-details/<category>/<int:id>")
 def movie_details(category,id):
