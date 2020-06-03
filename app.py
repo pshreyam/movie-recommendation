@@ -18,14 +18,26 @@ from flask import (
     make_response
 )
 
+from functools import wraps
+
 app = Flask(__name__)
 app.secret_key = "kjsd_!hfkjsdhfkjdsh"
 
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args,**kwargs):
+        if 'name' in session.keys():
+            return f(*args,**kwargs)
+        else:
+            return redirect (url_for('login'))
+    return wrap
+
+
 @app.route("/")
+@login_required
 def index():
-    if 'name' in session.keys():
-        return redirect(url_for('movies'))
-    return render_template('index.html')
+    return redirect(url_for('movies'))
 
 @app.route("/register",methods=['GET','POST'])
 def register():
@@ -45,14 +57,14 @@ def register():
             return redirect(url_for('login'))
         else:
             return render_template('register.html',error = err)
-    if 'name' in session.keys():
-        return redirect(url_for('movies'))
     return render_template('register.html',error = None)
 
+
 @app.route('/logout')
+@login_required
 def logout():
     session.pop('name',None)
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 @app.route("/login",methods=['GET','POST'])
 def login():
@@ -65,23 +77,24 @@ def login():
             return redirect(url_for('movies'))
         else:
             return render_template('login.html', error = err)
-    if 'name' in session.keys():
-        return redirect(url_for('movies'))
     return render_template('login.html', error = None)
 
 @app.route("/movies")
 @app.route("/movies/<category>")
+@login_required
 def movies(category = "imdb"):
     movies = loadMovies.loadMovies(category)
     return render_template('movies.html',movies=movies,category=category)
 
 
 @app.route("/movie-details/<category>/<int:id>")
+@login_required
 def movie_details(category,id):
     movie = loadMovies.loadMovies(category)[id-1]
     return render_template('movie-details.html',movie=movie)
 
 @app.route("/search",methods = ["GET","POST"])
+@login_required
 def search():
     searchResult = None
     searchCategory = None
