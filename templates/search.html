@@ -33,10 +33,10 @@
                 <input id="search-bar" type="text" name="searchItem" placeholder="Search Movie" size='200'>
                 <select name="searchCategory" class="category-movies">
                     {%for item in searchCategory%}
-                        {%if item=="imdb"%}
-                            <option value="{{item}}" selected="selected">{{item.title()}}</option>
-                        {%elif item=="southindian"%}
-                            <option value="{{item}}">South Indian</option>
+                        {%if item=="Imdb"%}
+                            <option value="{{item}}" selected="selected">
+                                {{item.title()}}
+                            </option>
                         {%else%}
                             <option value="{{item}}">{{item.title()}}</option>
                         {%endif%}

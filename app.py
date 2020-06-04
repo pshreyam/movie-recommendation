@@ -98,7 +98,7 @@ def movie_details(category,id):
 def search():
     searchResult = None
     searchCategory = None
-    searchMovieCategory = searchMovies.searchMoviesCategory()
+    searchMovieCategory =sorted(['Imdb', 'Sports', 'Crime', 'Kids', 'Action']) 
     if request.method == "POST":
         searchItem = request.form['searchItem'].strip()
         searchCategory = request.form['searchCategory']
@@ -106,8 +106,8 @@ def search():
     return render_template("search.html",searchResult=searchResult,searchCategory=searchMovieCategory,currentCategory=searchCategory)
 
 @app.errorhandler(404)
-def not_found(e):
+def error(error):
     return render_template("sorry.html"), 404
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",debug=True)
+    app.run(debug=True)
