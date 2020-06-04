@@ -62,16 +62,3 @@ def searchMovies(table_name,value):
             )
         )
     return movies
-
-def searchMoviesCategory():
-    table_names=[]
-    cursor = conn.cursor()
-    sql = "SHOW TABLES"
-    cursor.execute(sql)
-    tables = cursor.fetchall()
-    for table in tables:
-        if table[0]!="user":
-            table_names.append(table[0])
-    return table_names
-
-
