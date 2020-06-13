@@ -1,0 +1,105 @@
+{% extends 'layouts/layout.html' %}
+
+{% block body %}
+
+<section class="hero is-dark">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+            Welcome, {{user_object.firstname}} {{user_object.lastname}}!
+            </h1>
+            <h2 class="subtitle">
+            @ {{user_object.username}}
+            </h2>
+            <div>
+                <span class="icon">
+                    <i class="fas fa-user-clock"></i>
+                </span>
+                {{curr_date}}
+            </div>
+        </div>
+    </div>
+</section>
+<br>
+<h3 class="title is-3">
+    Some {{dashboard_content.primary_category}} picks for you!
+</h3>
+{% for movie in dashboard_content.primary %}
+<div class="box">
+    <article class="media">
+    <div class="media-left">
+        <figure class="image is-64x64">
+        <img src="data:;base64,{{movie.image}}" alt="Image">
+        </figure>
+    </div>
+    <div class="media-content">
+        <div class="content">
+        <p>
+            <a href="{{url_for('movie_details', 
+                category=dashboard_content.primary_category.lower(), id=movie.id)}}">
+                <strong>{{movie.title}}</strong>
+            </a>
+            <small>{{movie.director}}</small> 
+            <br>
+            {{movie.genre}}
+            <br>
+            <time datetime="2016">{{movie.year}}</time>
+        </p>
+        </div>
+        <nav class="level is-mobile">
+        <div class="level-left">
+            <a class="level-item" aria-label="like">
+            <span class="icon is-small">
+                <i class="fas fa-heart" aria-hidden="true"></i>
+            </span>
+            </a>
+        </div>
+        </nav>
+    </div>
+    </article>
+</div>
+{% endfor %}
+
+<br>
+
+<h3 class="title is-3">
+    Some {{dashboard_content.secondary_category}} picks for you!
+</h3>
+
+{% for movie in dashboard_content.secondary %}
+<div class="box">
+    <article class="media">
+    <div class="media-left">
+        <figure class="image is-64x64">
+        <img src="data:;base64,{{movie.image}}" alt="Image">
+        </figure>
+    </div>
+    <div class="media-content">
+        <div class="content">
+        <p>
+            <a href="{{url_for('movie_details', 
+                category=dashboard_content.secondary_category.lower(), id=movie.id)}}">
+                <strong>{{movie.title}}</strong>
+            </a>
+            <small>{{movie.director}}</small> 
+            <br>
+            {{movie.genre}}
+            <br>
+            <time datetime="2016">{{movie.year}}</time>
+        </p>
+        </div>
+        <nav class="level is-mobile">
+        <div class="level-left">
+            <a class="level-item" aria-label="like">
+            <span class="icon is-small">
+                <i class="fas fa-heart" aria-hidden="true"></i>
+            </span>
+            </a>
+        </div>
+        </nav>
+    </div>
+    </article>
+</div>
+{% endfor %}
+
+{% endblock %}
