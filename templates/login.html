@@ -1,141 +1,51 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	    <title>CORONA MOVIES</title>
-	    <meta name="description" content="">
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel='icon' href="{{url_for('static',filename='img/logo.png')}}" type='image/x-icon'>
-	</head>
-	<body>
-		<style>
-			*{
-				box-sizing: border-box;
-				margin:0;
-				padding:0;
-			}
-			.container{
-				width:100%;
-				height:100%;
-				position:absolute;
-			}			
-			.login-box{
-				background-color:blue;
-				width:350px;
-				height:500px;
-				position:absolute;
-				left:50%;
-				top:50%;
-				transform: translate(-50%,-50%);
-				border-radius:0 50px 0 50px;
-				box-shadow:0 0 20px 5px black;
-			}
-			.login-box .name{
-				position:absolute;
-				top:120px;
-				left:50%;
-				width:100px auto;
-				height:40px;
-				transform:translateX(-50%);
-				color:white;
-				font-size:34px;
-				user-select: none;
-			}
-			.login-box .logobox{
-				position:absolute;
-				top:10px;
-				left:50%;
-				width:100px;
-				height:100px;
-				border-radius:50%;
-				border:1px solid black;
-				transform:translateX(-50%);
-				background-color:white;
-				user-select: none;
-				box-shadow: 0 0 20px 0 #000;
-			}
-			.login-box .logobox img{
-				padding:5%;
-				width:95%;
-				height:95%;
-				user-select: none;
-			}
-			.login-box .input-area{
-				width:80%;
-				height:150px;
-				position:absolute;
-				top:190px;
-				left:10%;				
-			}
-			.login-box #error{
-				width:80%;
-				height:25px;
-				position:absolute;
-				top:330px;
-				left:10%;
-				color:white;
-				font-size: 16px;
-				text-align:center;
-			}
-			.login-box input[type=submit]{
-				width:70%;
-				height:40px;
-				position:absolute;
-				top:370px;
-				left:15%;
-				border-radius:6px;
-				cursor:pointer;				
-			}
-			.login-box .link{
-				color:black;
-				text-decoration:none;
-				border:1px solid #ddd;
-				width:30% auto;
-				height:40px;
-				position:absolute;
-				top:420px;
-				left:50%;
-				transform:translateX(-50%);
-				border-radius:6px;
-				padding:10px;
-				background-color: #eee;
-				box-shadow: 0 0 5px 0 inset #000;
-			}
-			.login-box .input-area input{
-				width:100%;
-				height:40px;
-				margin:10px 0;
-				border-radius:6px;
-				padding:0 10px;
-			}			
-		</style>
-		<div class="container">
-			<div class="login-box">
-				<form action="" method="post">
-					<a href='/'>
-						<div class="logobox">
-							<img src="./static/img/logo.png" />
-						</div>
-					</a>
-					<div class="name">
-						Login
+{%extends 'layouts/layout.html'%}
+
+{%block body%}
+<form action="{{url_for('login')}}" method="POST">	
+	<h2 class="title is-2">Login</h2>
+	
+	{% with messages=get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category, message in messages %}
+				{% set message_class = 'is-success' %}
+				{% if category == 'error' %}
+					{% set message_class = 'is-danger' %}
+				{% endif %}
+					<div class="notification {{ message_class }} ">
+						{{ message }} 
 					</div>
-					<div class ="input-area">
-						<input type="text" value="" name="uname" id="uname" placeholder="Username" maxlength="20" spellcheck="false" required>
-						<input type="password" value="" name="pwd" id="pwd" placeholder="Password" required>
-					</div>
-					<input type="submit" value="Login">
-					<a href='/register' class='link'>Register</a>
-					<span id='error'>
-						{%if error%}
-							{{error}}
-						{%else%}
-							Log in to continue.
-						{%endif%}
-					</span>
-				</form>
-			</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	  
+	<div class="field">
+	<label class="label">Username</label>
+	<div class="control has-icons-left has-icons-right">
+		<input class="input" type="text" name="uname" placeholder="Username">
+		<span class="icon is-small is-left">
+		<i class="fas fa-user"></i>
+		</span>
+		<!-- <span class="icon is-small is-right">
+		<i class="fas fa-check"></i>
+		</span> -->
+	</div>
+	<!-- <p class="help is-success">This username is available</p> -->
+	</div>
+
+	<div class="field">
+	<label class="label">Password</label>
+	<div class="control has-icons-left has-icons-right">
+		<input class="input" type="password" name="pwd" placeholder="Password">
+		<span class="icon is-small is-left">
+		<i class="fas fa-lock"></i>
+		</span>
+	</div>
+	</div>
+	
+	<div class="field is-grouped is-grouped-right">
+		<div class="control">
+		  <button type='submit' class="button is-link">Login</button>
 		</div>
-	<body>
-</html>
+	</div>
+</form>
+{%endblock%}
