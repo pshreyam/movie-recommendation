@@ -24,9 +24,11 @@
         {{movie.synopsis}} 
       </div>
       <div class="tags">
-        {% for tag in movie.genre.split('/') %}
-        <span class="tag is-info">{{tag}}</span>
-        {% endfor %}
+        {% if movie.genre %}
+          {% for tag in movie.genre.split('/') %}
+          <span class="tag is-info">{{tag}}</span>
+          {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>

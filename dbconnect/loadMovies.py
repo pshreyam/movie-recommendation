@@ -15,17 +15,20 @@ def loadMovies(table_name):
 
 def getUserContent(user):
     content = {}
-    if user.get('nationality').lower() == 'nepalese':
+    nationality = user.get('nationality','').lower() 
+    gender = user.get('gender','')
+
+    if nationality == 'nepalese' or nationality == 'nepali':
         content['primary'] = loadMovies('nepali')[:5]
         content['primary_category'] = 'Nepali'
-    elif user.get('nationality').lower() == 'indian':
+    elif nationality == 'indian':
         content['primary'] = loadMovies('hindi')[:5]
         content['primary_category'] = 'Hindi'
     else:
         content['primary'] = loadMovies('imdb')[:5]
         content['primary_category'] = 'Imdb'
 
-    if user.get('gender') == 'M':
+    if gender == 'M':
         content['secondary'] = loadMovies('action')[:5]
         content['secondary_category'] = 'Action'
     else:
