@@ -98,6 +98,36 @@ try:
             else:
                 return render_template('login.html')
         return render_template('login.html')
+    
+    @app.route('/like/<int:user_id>/<int:movie_id>')
+    @login_required
+    def select_movies(user_id, movie_id):
+        loadMovies.selectMovies(user_id, movie_id)
+        return redirect(url_for('dashboard'))
+
+
+
+    @app.route('/user')
+    @login_required
+    def user():
+        user_details = handleLogin.login_details(session.get('name'))
+        return render_template('user-profile.html',user_details=user_details)
+
+    
+    @app.route('/user/edit', methods=['GET','POST'])
+    @login_required
+    def edit_user():
+        if request.method == 'POST':
+            isUpdated, err = handleRegister.updateUserProfile(json.dumps(request.form),session.get('name',''))
+            if err:
+                    flash(err, 'error')
+            if isUpdated:
+                flash('Successfully updated profile!', 'success')
+                return redirect(url_for('user'))
+            else:
+                return redirect(url_for('edit_user'))
+        user_details = handleLogin.login_details(session.get('name'))
+        return render_template('edit-user-profile.html',user_details=user_details)
 
 
 
@@ -115,16 +145,26 @@ try:
     @app.route("/movies/<string:category>")
     @login_required
     def movies(category = "imdb"):
+        user_details = handleLogin.login_details(session.get('name'))
         movies = loadMovies.loadMovies(category)
-        return render_template('movies.html',movies=movies,category=category)
+        return render_template('movies.html',
+                   movies=movies, 
+                   category=category,
+                   user_object=user_details)
 
 
 
     @app.route("/movie/<string:category>/<int:id>")
     @login_required
     def movie_details(category, id):
+        user_details = handleLogin.login_details(session.get('name'))
+        if id <= 0:
+            abort(404)
         movie = loadMovies.loadMovies(category)[id-1]
-        return render_template('movie-details.html',movie=movie,category=category)
+        return render_template('movie-details.html',
+                    movie=movie,
+                    category=category,
+                    user_object=user_details)
 
 
 
@@ -150,7 +190,7 @@ try:
 
 
     if __name__ == "__main__":
-        app.run(debug=True)
+        app.run(host='0.0.0.0' ,debug=True)
 
 
 
