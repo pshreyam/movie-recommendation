@@ -22,13 +22,13 @@ def register_user(user):
     if not password == repassword:
         return False, "Passwords do not match!"
     
-    # sql = "SELECT * FROM user where username='{userName}'"
+    sql = f"SELECT * FROM user WHERE username='{userName}'"
 
-    # cursor.execute(sql)
-    # existing_user = cursor.fetchone()
-    # if existing_user:
-    #     print(existing_user)
-    #     return False, "Username already exists!"
+    cursor.execute(sql)
+    existing_user = cursor.fetchone()
+    if existing_user:
+        print(existing_user)
+        return False, "Username already exists!"
 
     sql =("INSERT INTO user (id, username, firstname," 
         "lastname, email, gender, pass, nationality) VALUES" 
@@ -41,3 +41,48 @@ def register_user(user):
     conn.close()
 
     return True, None
+
+def updateUserProfile(user, uname):
+    conn = connect_to_db()
+    cursor = conn.cursor(dictionary=True)
+    user = json.loads(user)
+
+    firstName = user.get('fname','').strip()
+    lastName = user.get('lname','').strip()
+    gender =user.get('gender','').strip()
+    email = user.get('email','').strip()
+    nationality = user.get('nation','').strip()
+    password = user.get('pwd','').strip()
+
+    if isEmpty(firstName,lastName,gender,email,nationality):
+        return False, "Fields Empty!"
+    
+    if isEmpty(password):
+        return False, "Enter the password!"
+
+    sql = f"SELECT * FROM user WHERE username='{uname}'"
+
+    cursor.execute(sql)
+    existing_user = cursor.fetchone()
+    if not existing_user:
+        return False, "No such user!"
+    
+    pwd = existing_user.get('pass', '')
+
+    if not password == pwd:
+        return False, "Passwords do not match!"
+    
+    sql =f""" UPDATE user 
+        SET firstname='{firstName}',
+        lastname='{lastName}', 
+        email='{email}', 
+        gender='{gender}',
+        nationality='{nationality}' 
+        WHERE username='{uname}'; """
+
+    cursor.execute(sql)
+    conn.commit()
+    conn.close()
+
+    return True, None
+

@@ -1,0 +1,96 @@
+{%extends 'layouts/layout.html'%}
+
+{% block body %}
+<form action="{{url_for('edit_user')}}" method="POST">	
+	<h2 class="title is-2">Update Profile</h2>
+
+	{% with messages=get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			{% for category, message in messages %}
+				{% set message_class = 'is-success' %}
+				{% if category == 'error' %}
+					{% set message_class = 'is-danger' %}
+				{% endif %}
+					<div class="notification {{ message_class }} ">
+						{{ message }} 
+					</div>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+	
+	<div class="field">
+		<label class="label">First Name</label>
+		<div class="control">
+          <input class="input" type="text" name="fname" placeholder="First Name"
+          value="{{user_details.firstname}}">
+		</div>
+	  </div>
+
+	  <div class="field">
+		<label class="label">Last Name</label>
+		<div class="control">
+          <input class="input" type="text" name="lname" placeholder="Last Name"
+          value="{{user_details.lastname}}">
+		</div>
+	  </div>
+	  
+	  <div class="field">
+		<label class="label">Email</label>
+		<div class="control has-icons-left has-icons-right">
+          <input class="input" type="email" name="email" placeholder="Email"
+          value="{{user_details.email}}">
+		  <span class="icon is-small is-left">
+			<i class="fas fa-envelope"></i>
+		  </span>
+		</div>
+	  </div>
+	  
+	  
+	  <div class="field">
+		<div class="control">
+			<label class="label">Gender</label>
+		  <label class="radio">
+			{% if user_details.gender == 'M' %}
+				<input type="radio" value="M" name="gender" checked>
+			{% else %}
+				<input type="radio" value="M" name="gender">
+			{% endif %}
+			Male 
+		  </label>
+		  <label class="radio">
+			{% if user_details.gender == 'F' %}
+				<input type="radio" value="F" name="gender" checked>
+			{% else %}
+				<input type="radio" value="F" name="gender">
+			{% endif%}
+			Female
+		  </label>
+		</div>
+	  </div>
+
+	  <div class="field">
+		<label class="label">Nationality</label>
+		<div class="control">
+          <input class="input" type="text" name="nation" placeholder="Nationality"
+          value="{{user_details.nationality}}">
+		</div>
+	  </div>
+
+	  <div class="field">
+		<label class="label">Password</label>
+		<div class="control has-icons-left has-icons-right">
+          <input class="input" type="password" name="pwd" 
+          placeholder="Enter Password To Confirm Change">
+		  <span class="icon is-small is-left">
+			<i class="fas fa-lock"></i>
+		  </span>
+		</div>
+	  </div>
+	  
+	<div class="field is-grouped is-grouped-right">
+		<div class="control">
+		  <button type='submit' class="button is-link">Update</button>
+		</div>
+	</div>
+</form>
+{% endblock %}

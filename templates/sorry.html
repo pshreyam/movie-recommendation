@@ -1,23 +1,7 @@
-<!DOCTYPE html>
-<html>
+{% extends 'layouts/layout.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>CORONA MOVIES</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{url_for('static',filename='css/sorry.css')}}">
-    <link rel='icon' href="{{url_for('static',filename='img/logo.png')}}" type='image/x-icon'>
-</head>
-
-<body>
-    <div class="content">
-        <h1>Sorry! Page not available!</h1><br>
-        <img class ='display-img' 
-        src="{{url_for('static',filename='img/error.png')}}" />
-        <a class='home-link' href="{{url_for('index')}}">Home Page</a>
-    </div>
-</body>
-
-</html>
+{% block body %}
+<hr>
+<h1 class="title is-1">Sorry the page is not available!</h1>
+<img src="{{url_for('static',filename='img/sorry-banner.png')}}">
+{% endblock %}

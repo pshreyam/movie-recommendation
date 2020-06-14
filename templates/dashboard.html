@@ -21,6 +21,50 @@
     </div>
 </section>
 <br>
+
+{% if dashboard_content.userSelect %}
+    <h3 class="title is-3">
+        {{dashboard_content.userSelect_title}} by @{{user_object.username}}!
+    </h3>
+    {% for movie in dashboard_content.userSelect %}
+    <div class="box">
+        <article class="media">
+        <div class="media-left">
+            <figure class="image is-64x64">
+            <img src="data:;base64,{{movie.image}}" alt="Image">
+            </figure>
+        </div>
+        <div class="media-content">
+            <div class="content">
+            <p>
+                <a href="{{url_for('movie_details', 
+                    category=dashboard_content.userSelect_category.lower(), id=movie.id)}}">
+                    <strong>{{movie.title}}</strong>
+                </a>
+                <small>{{movie.director}}</small> 
+                <br>
+                {{movie.genre}}
+                <br>
+                <time datetime="2016">{{movie.year}}</time>
+            </p>
+            </div>
+            <nav class="level is-mobile">
+            <!-- <div class="level-left">
+                <a class="level-item" aria-label="like">
+                <span class="icon is-small">
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                </span>
+                </a>
+            </div> -->
+            </nav>
+        </div>
+        </article>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<br>
+
 <h3 class="title is-3">
     Some {{dashboard_content.primary_category}} picks for you!
 </h3>
@@ -47,13 +91,16 @@
         </p>
         </div>
         <nav class="level is-mobile">
+        {% if dashboard_content.primary_category.lower() == 'imdb'%}
         <div class="level-left">
-            <a class="level-item" aria-label="like">
+            <a class="level-item" aria-label="like" 
+            href="{{url_for('select_movies', user_id=user_object.id , movie_id=movie.id)}}">
             <span class="icon is-small">
                 <i class="fas fa-heart" aria-hidden="true"></i>
             </span>
             </a>
         </div>
+        {% endif %}
         </nav>
     </div>
     </article>
@@ -61,6 +108,48 @@
 {% endfor %}
 
 <br>
+{% if dashboard_content.default %}
+    <h3 class="title is-3">
+        Some {{dashboard_content.default_category}} picks for you!
+    </h3>
+    {% for movie in dashboard_content.default %}
+    <div class="box">
+        <article class="media">
+        <div class="media-left">
+            <figure class="image is-64x64">
+            <img src="data:;base64,{{movie.image}}" alt="Image">
+            </figure>
+        </div>
+        <div class="media-content">
+            <div class="content">
+            <p>
+                <a href="{{url_for('movie_details', 
+                    category=dashboard_content.default_category.lower(), id=movie.id)}}">
+                    <strong>{{movie.title}}</strong>
+                </a>
+                <small>{{movie.director}}</small> 
+                <br>
+                {{movie.genre}}
+                <br>
+                <time datetime="2016">{{movie.year}}</time>
+            </p>
+            </div>
+            <nav class="level is-mobile">
+            <div class="level-left">
+                <a class="level-item" aria-label="like" 
+                href="{{url_for('select_movies', user_id=user_object.id , movie_id=movie.id)}}">
+                <span class="icon is-small">
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                </span>
+                </a>
+            </div>
+            </nav>
+        </div>
+        </article>
+    </div>
+    {% endfor %}
+<br>
+{% endif %}
 
 <h3 class="title is-3">
     Some {{dashboard_content.secondary_category}} picks for you!
@@ -89,13 +178,13 @@
         </p>
         </div>
         <nav class="level is-mobile">
-        <div class="level-left">
+        <!-- <div class="level-left">
             <a class="level-item" aria-label="like">
             <span class="icon is-small">
                 <i class="fas fa-heart" aria-hidden="true"></i>
             </span>
             </a>
-        </div>
+        </div> -->
         </nav>
     </div>
     </article>
