@@ -1,10 +1,14 @@
+"""
+Handles Connection And Interaction With Database! 
+"""
 import mysql.connector as db
 
 def connect_to_db():
-    conn = db.connect(
-        host = "localhost",
-        user = "root",
-        password= "",
-        database = "recomovies"
-    )
-    return conn
+    config = {
+        'host' : 'localhost',
+        'user' : 'root',
+        'password' : '',
+        'database' : 'recomovies'
+    }
+    connection = db.connect(**config)
+    return connection

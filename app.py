@@ -1,9 +1,9 @@
 try:
     from dbconnect import (
         loadMovies,
-        searchMovies,
         handleLogin,
         handleRegister,
+        handleConnection,
     )
     from flask import (
         Flask,
@@ -24,7 +24,7 @@ try:
     app = Flask(__name__)
     app.secret_key = "kjsd_!hfkjsdhfkjdsh"
 
-    #ok
+
     def login_required(f):
         @wraps(f)
         def wrap(*args,**kwargs):
@@ -33,6 +33,7 @@ try:
             else:
                 return redirect (url_for('login'))
         return wrap
+
 
     def logoff_required(f):
         @wraps(f)
@@ -44,12 +45,10 @@ try:
         return wrap
 
 
-
     @app.route("/")
     @login_required
     def index():
         return redirect(url_for('dashboard'))
-
 
 
     @app.route("/dashboard")
@@ -66,7 +65,6 @@ try:
         )
 
 
-
     @app.route("/register", methods=['GET','POST'])
     @logoff_required
     def register():
@@ -76,11 +74,12 @@ try:
             if err:
                 flash(err, 'error')
             if registered:
+                flash('Your account has been created. Now you are able to log in!',
+                    'success')
                 return redirect(url_for('login'))
             else:
                 return redirect(url_for('register'))
         return render_template('register.html')
-
 
 
     @app.route("/login",methods=['GET','POST'])
@@ -98,30 +97,81 @@ try:
             else:
                 return render_template('login.html')
         return render_template('login.html')
-    
-    @app.route('/like/<int:user_id>/<int:movie_id>')
-    @login_required
-    def select_movies(user_id, movie_id):
-        loadMovies.selectMovies(user_id, movie_id)
-        return redirect(url_for('dashboard'))
 
+
+    @app.route('/like/<int:movie_id>')
+    @login_required
+    def select_movies(movie_id):
+        user_id = handleLogin.login_details(session.get('name')).get('id','')
+        msg, category = loadMovies.selectMovies(user_id, movie_id)
+        flash(msg, category)
+        return redirect(url_for('dashboard'))
 
 
     @app.route('/user')
     @login_required
     def user():
         user_details = handleLogin.login_details(session.get('name'))
-        return render_template('user-profile.html',user_details=user_details)
+        followers = len(handleConnection.get_followers(user_details.get('id')))
+        following = len(handleConnection.get_following(user_details.get('id')))
+        return render_template(
+            'user-profile.html',
+            user_details=user_details,
+            followers=followers,
+            following=following
+        )
 
-    
+    @app.route('/user/following')
+    @login_required
+    def user_following():
+        user_details = handleLogin.login_details(session.get('name'))
+        following = handleConnection.get_following(user_details.get('id'))
+        return render_template('following.html', following=following)
+
+
+    @app.route('/user/followers')
+    @login_required
+    def user_followers():
+        user_details = handleLogin.login_details(session.get('name'))
+        followers = handleConnection.get_followers(user_details.get('id'))
+        following = handleConnection.get_following(user_details.get('id'))
+        following_id_list = list(map(lambda x:x.get('id'),following))
+        return render_template(
+            'followers.html', 
+            followers=followers, 
+            following_id_list=following_id_list)
+
+    @app.route('/user/follow/<username>')
+    @login_required
+    def follow_user(username):
+        if username == session.get('name'):
+            flash('You cannot perform this action!','error')
+            return redirect(url_for('user_following')) 
+        user_id = handleLogin.login_details(session.get('name')).get('id')
+        following_id = handleLogin.login_details(username).get('id')
+        msg, err = handleConnection.follow(user_id, following_id)
+        flash(msg , err)
+        return redirect(url_for('user_following'))
+
+
+    @app.route('/user/unfollow/<username>')
+    @login_required
+    def unfollow_user(username):
+        user_id = handleLogin.login_details(session.get('name')).get('id')
+        following_id = handleLogin.login_details(username).get('id')
+        msg, err = handleConnection.unfollow(user_id, following_id)
+        flash(msg , err)
+        return redirect(url_for('user_following'))
+
+
     @app.route('/user/edit', methods=['GET','POST'])
     @login_required
     def edit_user():
         if request.method == 'POST':
-            isUpdated, err = handleRegister.updateUserProfile(json.dumps(request.form),session.get('name',''))
+            is_updated, err = handleRegister.updateUserProfile(request.form,session.get('name',''))
             if err:
-                    flash(err, 'error')
-            if isUpdated:
+                flash(err, 'error')
+            if is_updated:
                 flash('Successfully updated profile!', 'success')
                 return redirect(url_for('user'))
             else:
@@ -130,8 +180,6 @@ try:
         return render_template('edit-user-profile.html',user_details=user_details)
 
 
-
-    #ok
     @app.route('/logout')
     @login_required
     def logout():
@@ -140,18 +188,18 @@ try:
         return redirect(url_for('login'))
 
 
-
     @app.route("/movies")
     @app.route("/movies/<string:category>")
     @login_required
     def movies(category = "imdb"):
         user_details = handleLogin.login_details(session.get('name'))
         movies = loadMovies.loadMovies(category)
-        return render_template('movies.html',
-                   movies=movies, 
-                   category=category,
-                   user_object=user_details)
-
+        return render_template(
+            'movies.html',
+            movies=movies, 
+            category=category,
+            user_object=user_details
+        )
 
 
     @app.route("/movie/<string:category>/<int:id>")
@@ -161,32 +209,49 @@ try:
         if id <= 0:
             abort(404)
         movie = loadMovies.loadMovies(category)[id-1]
-        return render_template('movie-details.html',
-                    movie=movie,
-                    category=category,
-                    user_object=user_details)
+        return render_template(
+            'movie-details.html',
+            movie=movie,
+            category=category,
+            user_object=user_details
+        )
 
 
-
-    @app.route("/search",methods = ["GET","POST"])
+    @app.route("/search")
     @login_required
     def search():
-        searchResult = None
-        searchCategory = None
-        searchMovieCategory =sorted(['Imdb', 'Sports', 'Crime', 'Kids', 'Action']) 
-        if request.method == "POST":
-            searchItem = request.form['searchItem'].strip()
-            searchCategory = request.form['searchCategory']
-            searchResult = searchMovies.searchMovies(searchCategory,searchItem)
-        return render_template("search.html",searchResult=searchResult,searchCategory=searchMovieCategory,currentCategory=searchCategory)
+        title = request.args.get('title', None)
+        category = request.args.get('category', 'imdb')
+        movies = loadMovies.search_movie(category, title)
+        return render_template('search.html', movies=movies, category=category)
 
 
+    @app.route("/users/profile/<username>")
+    def public_user_profile(username):
+        if username == session.get('name',''):
+            return redirect(url_for('user'))
+        user_details = handleLogin.login_details(username)
+        current_user = handleLogin.login_details(session.get('name',''))
+        if not user_details:
+            abort(404)
+        followers = len(handleConnection.get_followers(user_details.get('id')))
+        following = len(handleConnection.get_following(user_details.get('id')))
+        if current_user:
+            following_list = handleConnection.get_following(current_user.get('id'))
+            following_id_list = list(map(lambda x:x.get('id'), following_list))
+        else:
+            following_id_list = []
+        return render_template(
+            'public-user-profile.html',
+            user_details=user_details,
+            followers=followers,
+            following=following,
+            following_id_list=following_id_list
+        )
 
-    #ok
     @app.errorhandler(404)
     def error(error):
         return render_template("sorry.html"), 404
-
 
 
     if __name__ == "__main__":
