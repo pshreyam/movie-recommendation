@@ -56,9 +56,10 @@ try:
     def dashboard():
         user_details = handleLogin.login_details(session.get('name'))
         if not user_details:
-            return "<h1>Error</h1>"
+            abort(404)
         dashboard_content = loadMovies.getUserContent(user_details)
-        return render_template('dashboard.html', 
+        return render_template(
+            'dashboard.html', 
             user_object = user_details ,
             dashboard_content = dashboard_content,
             curr_date = datetime.today().strftime("%A, %d %B %Y")
@@ -74,8 +75,10 @@ try:
             if err:
                 flash(err, 'error')
             if registered:
-                flash('Your account has been created. Now you are able to log in!',
-                    'success')
+                flash(
+                    'Your account has been created. Now you are able to log in!',
+                    'success'
+                )
                 return redirect(url_for('login'))
             else:
                 return redirect(url_for('register'))
@@ -99,7 +102,7 @@ try:
         return render_template('login.html')
 
 
-    @app.route('/like/<int:movie_id>')
+    @app.route('/movies/<int:movie_id>/like')
     @login_required
     def select_movies(movie_id):
         user_id = handleLogin.login_details(session.get('name')).get('id','')
@@ -108,7 +111,7 @@ try:
         return redirect(url_for('dashboard'))
 
 
-    @app.route('/user')
+    @app.route('/user/profile')
     @login_required
     def user():
         user_details = handleLogin.login_details(session.get('name'))
@@ -180,7 +183,7 @@ try:
         return render_template('edit-user-profile.html',user_details=user_details)
 
 
-    @app.route('/logout')
+    @app.route('/logout/')
     @login_required
     def logout():
         session.clear()
@@ -188,7 +191,7 @@ try:
         return redirect(url_for('login'))
 
 
-    @app.route("/movies")
+    @app.route("/movies/")
     @app.route("/movies/<string:category>")
     @login_required
     def movies(category = "imdb"):
@@ -217,36 +220,47 @@ try:
         )
 
 
-    @app.route("/search")
+    @app.route("/search/movies")
     @login_required
-    def search():
+    def search_movies():
         title = request.args.get('title', None)
         category = request.args.get('category', 'imdb')
         movies = loadMovies.search_movie(category, title)
         return render_template('search.html', movies=movies, category=category)
 
 
-    @app.route("/users/profile/<username>")
+    @app.route("/<string:username>")
+    def user_profile_shortcut(username):
+        return redirect(url_for('public_user_profile', username=username))
+
+    @app.route("/users/<string:username>")
     def public_user_profile(username):
-        if username == session.get('name',''):
-            return redirect(url_for('user'))
         user_details = handleLogin.login_details(username)
         current_user = handleLogin.login_details(session.get('name',''))
         if not user_details:
             abort(404)
-        followers = len(handleConnection.get_followers(user_details.get('id')))
-        following = len(handleConnection.get_following(user_details.get('id')))
+        user_id = user_details.get('id')
+        followers = len(handleConnection.get_followers(user_id))
+        following = len(handleConnection.get_following(user_id))
+        movies_liked = loadMovies.getUserSelectMovies(user_id)
         if current_user:
             following_list = handleConnection.get_following(current_user.get('id'))
             following_id_list = list(map(lambda x:x.get('id'), following_list))
+            if current_user.get('username') == username:
+                is_current_user = True
+            else:
+                is_current_user = False
         else:
+            is_current_user = False
             following_id_list = []
         return render_template(
             'public-user-profile.html',
             user_details=user_details,
             followers=followers,
             following=following,
-            following_id_list=following_id_list
+            following_id_list=following_id_list,
+            movies_liked=movies_liked,
+            is_current_user=is_current_user
         )
 
     @app.errorhandler(404)
@@ -258,8 +272,5 @@ try:
         app.run(host='0.0.0.0' ,debug=True)
 
 
-
-except ImportError:
-    print("Couldn't load modules.")
 except Exception as exp:
     print(exp)
