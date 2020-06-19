@@ -1,12 +1,16 @@
 {%extends 'layouts/layout.html'%}
 
 {%block body%}
-<h4 class="title is-4">
-    <a href="{{url_for('movies')}}">/movies</a>
-    <a href="{{url_for('movies', category=category)}}">/{{category}}</a>/
-    {{movie.title}}
-</h4>
-<div class="card">
+
+  <nav class="breadcrumb has-arrow-separator is-medium" aria-label="breadcrumbs">
+    <ul>
+      <li><a href="{{url_for('movies')}}">movies</a></li>
+      <li><a href="{{url_for('movies', category=category)}}">{{category}}</a></li>
+      <li class="is-active"><a href="#" aria-current="page">{{movie.title}}</a></li>
+    </ul>
+  </nav>
+
+  <div class="card">
     <div class="card-content">
       <div class="media">
         <div class="media-left">
