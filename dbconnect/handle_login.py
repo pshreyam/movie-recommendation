@@ -1,7 +1,7 @@
 from . import connect_to_db
 
 
-def doLogin(username, password):
+def login(username, password):
     username = username.lower()
 
     conn = connect_to_db()

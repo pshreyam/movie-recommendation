@@ -3,7 +3,7 @@ from base64 import b64encode
 from . import connect_to_db
 
 
-def loadMovies(table_name):
+def load_movies(table_name):
     """ 
     Loads Movies From Different Tables.
     """
@@ -18,7 +18,7 @@ def loadMovies(table_name):
     return movies
 
 
-def getUserSelectMovies(user_id):
+def get_user_selected_movies(user_id):
     """
     Gets Movies Liked By Users.
     """
@@ -33,7 +33,7 @@ def getUserSelectMovies(user_id):
     return movies
 
 
-def getUserContent(user):
+def get_user_content(user):
     """
     Gets Content For Users Based Upon Their Gender And Nationality.
     (Not Final Algo Implementation)(Temporary) 
@@ -42,35 +42,35 @@ def getUserContent(user):
     nationality = user.get('nationality', '').lower()
     gender = user.get('gender', '')
 
-    content['userSelect'] = getUserSelectMovies(user.get('id'))
+    content['userSelect'] = get_user_selected_movies(user.get('id'))
     content['userSelect_title'] = 'Movies liked'
     content['userSelect_category'] = 'imdb'
 
     if nationality == 'nepalese' or nationality == 'nepali':
-        content['primary'] = loadMovies('nepali')[:5]
+        content['primary'] = load_movies('nepali')[:5]
         content['primary_category'] = 'Nepali'
     elif nationality == 'indian':
-        content['primary'] = loadMovies('hindi')[:5]
+        content['primary'] = load_movies('hindi')[:5]
         content['primary_category'] = 'Hindi'
     else:
-        content['primary'] = loadMovies('imdb')[:5]
+        content['primary'] = load_movies('imdb')[:5]
         content['primary_category'] = 'Imdb'
 
     if gender == 'M':
-        content['secondary'] = loadMovies('action')[:5]
+        content['secondary'] = load_movies('action')[:5]
         content['secondary_category'] = 'Action'
     else:
-        content['secondary'] = loadMovies('musical')[:5]
+        content['secondary'] = load_movies('musical')[:5]
         content['secondary_category'] = 'Musical'
 
     if (nationality == 'nepali' or nationality == 'nepalese' or nationality == 'indian'):
-        content['default'] = loadMovies('imdb')[:5]
+        content['default'] = load_movies('imdb')[:5]
         content['default_category'] = 'Imdb'
 
     return content
 
 
-def selectMovies(user_id, movie_id):
+def select_movies(user_id, movie_id):
     """
     Like Movie For Users From Imdb.
     """
