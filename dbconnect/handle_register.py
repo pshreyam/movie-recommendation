@@ -44,7 +44,7 @@ def register_user(user):
     return True, None
 
 
-def updateUserProfile(user, uname):
+def update_user_profile(user, uname):
     conn = connect_to_db()
     cursor = conn.cursor(dictionary=True)
 
