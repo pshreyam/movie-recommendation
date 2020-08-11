@@ -1,5 +1,6 @@
 from . import connect_to_db
 
+
 def get_followers(user_id):
     """
     Gets Followers For User.
@@ -12,6 +13,7 @@ def get_followers(user_id):
     conn.close()
     return followers
 
+
 def get_following(user_id):
     """
     Gets People Followed By User.
@@ -23,6 +25,7 @@ def get_following(user_id):
     following = cursor.fetchall()
     conn.close()
     return following
+
 
 def follow(user_id, other_id):
     """
@@ -45,6 +48,7 @@ def follow(user_id, other_id):
     conn.commit()
     conn.close()
     return 'Successfully followed user!', 'success'
+
 
 def unfollow(user_id, other_id):
     """
