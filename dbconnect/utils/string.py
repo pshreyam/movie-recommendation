@@ -1,4 +1,4 @@
 def isEmpty(*args):
     for arg in args:
-        if arg.strip()=="":
+        if arg.strip() == "":
             return True

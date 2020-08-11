@@ -1,6 +1,7 @@
 from . import connect_to_db
 
-def doLogin(username,password):
+
+def doLogin(username, password):
     username = username.lower()
 
     conn = connect_to_db()
@@ -16,8 +17,9 @@ def doLogin(username,password):
         return False, f"Invalid Credentials!"
 
     conn.close()
-    
+
     return True, None
+
 
 def login_details(username):
     username = username.lower()
@@ -30,4 +32,3 @@ def login_details(username):
     conn.close()
 
     return user_record
-

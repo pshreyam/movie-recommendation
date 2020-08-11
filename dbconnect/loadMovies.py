@@ -1,4 +1,5 @@
 from base64 import b64encode
+
 from . import connect_to_db
 
 
@@ -13,8 +14,9 @@ def loadMovies(table_name):
     movies = cursor.fetchall()
     conn.close()
     for movie in movies:
-        movie['image'] = b64encode(movie.get('image','')).decode("utf-8")
+        movie['image'] = b64encode(movie.get('image', '')).decode("utf-8")
     return movies
+
 
 def getUserSelectMovies(user_id):
     """
@@ -27,8 +29,9 @@ def getUserSelectMovies(user_id):
     movies = cursor.fetchall()
     conn.close()
     for movie in movies:
-        movie['image'] = b64encode(movie.get('image','')).decode("utf-8")
+        movie['image'] = b64encode(movie.get('image', '')).decode("utf-8")
     return movies
+
 
 def getUserContent(user):
     """
@@ -36,8 +39,8 @@ def getUserContent(user):
     (Not Final Algo Implementation)(Temporary) 
     """
     content = {}
-    nationality = user.get('nationality','').lower() 
-    gender = user.get('gender','')
+    nationality = user.get('nationality', '').lower()
+    gender = user.get('gender', '')
 
     content['userSelect'] = getUserSelectMovies(user.get('id'))
     content['userSelect_title'] = 'Movies liked'
@@ -60,7 +63,7 @@ def getUserContent(user):
         content['secondary'] = loadMovies('musical')[:5]
         content['secondary_category'] = 'Musical'
 
-    if (nationality == 'nepali' or nationality == 'nepalese' or nationality=='indian'):
+    if (nationality == 'nepali' or nationality == 'nepalese' or nationality == 'indian'):
         content['default'] = loadMovies('imdb')[:5]
         content['default_category'] = 'Imdb'
 
@@ -72,7 +75,7 @@ def selectMovies(user_id, movie_id):
     Like Movie For Users From Imdb.
     """
     if not user_id:
-        return 'There was some problem adding the movie!' ,'error'
+        return 'There was some problem adding the movie!', 'error'
     conn = connect_to_db()
     cursor = conn.cursor()
     sql = f"""SELECT * FROM userselectmovies 
@@ -87,7 +90,7 @@ def selectMovies(user_id, movie_id):
     cursor.execute(sql)
     conn.commit()
     conn.close()
-    return 'Successfully added to dashboard!' ,'success'
+    return 'Successfully added to dashboard!', 'success'
 
 
 def search_movie(category, title):
@@ -100,5 +103,5 @@ def search_movie(category, title):
     movies = cursor.fetchall()
     conn.close()
     for movie in movies:
-        movie['image'] = b64encode(movie.get('image','')).decode("utf-8")
+        movie['image'] = b64encode(movie.get('image', '')).decode("utf-8")
     return movies
