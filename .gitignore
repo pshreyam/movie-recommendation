@@ -2,3 +2,7 @@ venv/
 .vscode/
 __pycache__/
 .env
+.vim
+.flaskenv
+profile_pics
+.python-version
