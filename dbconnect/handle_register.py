@@ -53,6 +53,7 @@ def update_user_profile(user, uname):
     gender = user.get('gender', '').strip()
     email = user.get('email', '').strip()
     nationality = user.get('nation', '').strip()
+    profile_pic = user.get('profile_pic', '').strip()
 
     if isEmpty(firstName, lastName, gender, email, nationality):
         return False, "Fields Empty!"
@@ -64,15 +65,19 @@ def update_user_profile(user, uname):
     if not existing_user:
         return False, "No such user!"
 
-    sql = f""" UPDATE user 
+    sql = f"""UPDATE user 
         SET firstname='{firstName}',
         lastname='{lastName}', 
         email='{email}', 
         gender='{gender}',
-        nationality='{nationality}' 
+        nationality='{nationality}'
         WHERE username='{uname}'; """
 
     cursor.execute(sql)
+    
+    if profile_pic:
+        cursor.execute(f"UPDATE user SET profile_pic='{profile_pic}' WHERE username='{uname}';")
+
     conn.commit()
     conn.close()
 

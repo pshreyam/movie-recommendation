@@ -10,6 +10,8 @@ from flask import (
     abort,
     flash,
 )
+from werkzeug.utils import secure_filename
+
 import json
 import os
 from datetime import datetime
@@ -26,6 +28,7 @@ from decorators import login_required, logoff_required
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'hhj3j9X8hAxYAgF1')
+app.config['PROFILE_PIC_FOLDER'] = 'static/profile_pics'
 
 
 @app.route("/")
@@ -156,8 +159,14 @@ def unfollow_user(username):
 @login_required
 def edit_user():
     if request.method == 'POST':
+        data = dict(request.form)
+        if 'profile_pic' in request.files and request.files.get('profile_pic'):
+            profile_pic = request.files.get('profile_pic')
+            filename = secure_filename(profile_pic.filename)
+            profile_pic.save(os.path.join(app.config['PROFILE_PIC_FOLDER'], filename))
+            data['profile_pic'] = filename
         is_updated, err = handle_register.update_user_profile(
-            request.form, session.get('name', ''))
+            data, session.get('name', ''))
         if err:
             flash(err, 'error')
         if is_updated:
@@ -215,12 +224,14 @@ def search_movies():
     return render_template('search.html', movies=movies, category=category)
 
 
-@app.route("/<string:username>")
-def user_profile_shortcut(username):
-    return redirect(url_for('public_user_profile', username=username))
+# @app.route("/@<string:username>")
+# def user_profile_shortcut(username):
+#     return redirect(url_for('public_user_profile', username=username))
+# 
+# 
+# @app.route("/users/@<string:username>")
 
-
-@app.route("/users/<string:username>")
+@app.route("/@<string:username>")
 def public_user_profile(username):
     user_details = handle_login.login_details(username)
     current_user = handle_login.login_details(session.get('name', ''))
@@ -255,7 +266,7 @@ def public_user_profile(username):
 
 @app.errorhandler(404)
 def error(error):
-    return render_template("sorry.html"), 404
+    return render_template("404.html"), 404
 
 
 if __name__ == "__main__":
