@@ -1,3 +1,5 @@
+from werkzeug.security import check_password_hash
+
 from . import connect_to_db
 
 
@@ -11,10 +13,10 @@ def login(username, password):
     user_record = cursor.fetchone()
 
     if not user_record:
-        return False, f"Invalid Credentials!"
-    db_pass = user_record['pass']
-    if not (password == db_pass):
-        return False, f"Invalid Credentials!"
+        return False, "Invalid Credentials!"
+    db_password = user_record['pass']
+    if not check_password_hash(db_password, password):
+        return False, "Invalid Credentials!"
 
     conn.close()
 

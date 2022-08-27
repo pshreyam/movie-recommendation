@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash
+
 from .utils.string import isEmpty
 import json
 from . import connect_to_db
@@ -8,22 +10,24 @@ def register_user(user):
     cursor = conn.cursor()
     user = json.loads(user)
 
-    userName = user.get('uname', '').strip().lower()
-    firstName = user.get('fname', '').strip()
-    lastName = user.get('lname', '').strip()
+    user_name = user.get('uname', '').strip().lower()
+    first_name = user.get('fname', '').strip()
+    last_name = user.get('lname', '').strip()
     gender = user.get('gender', '').strip()
     email = user.get('email', '').strip()
     nationality = user.get('nation', '').strip()
     password = user.get('pwd', '').strip()
     repassword = user.get('repwd', '').strip()
 
-    if isEmpty(userName, firstName, lastName, gender, email, nationality, password, repassword):
+    if isEmpty(user_name, first_name, last_name, gender, email, nationality, password, repassword):
         return False, "Fields Empty!"
 
     if not password == repassword:
         return False, "Passwords do not match!"
 
-    sql = f"SELECT * FROM user WHERE username='{userName}'"
+    hashed_password = generate_password_hash(password)
+
+    sql = f"SELECT * FROM user WHERE username='{user_name}'"
 
     cursor.execute(sql)
     existing_user = cursor.fetchone()
@@ -33,8 +37,8 @@ def register_user(user):
 
     sql = ("INSERT INTO user (id, username, firstname,"
            "lastname, email, gender, pass, nationality) VALUES"
-           f"(NULL, '{userName}', '{firstName}', '{lastName}',"
-           f" '{email}', '{gender}', '{password}',"
+           f"(NULL, '{user_name}', '{first_name}', '{last_name}',"
+           f" '{email}', '{gender}', '{hashed_password}',"
            f" '{nationality}');")
 
     cursor.execute(sql)
