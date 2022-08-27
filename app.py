@@ -13,7 +13,6 @@ from flask import (
 import json
 import os
 from datetime import datetime
-from functools import wraps
 
 from dbconnect import (
     load_movies,
@@ -22,31 +21,18 @@ from dbconnect import (
     handle_connection,
 )
 
+from decorators import login_required, logoff_required
+
+
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'hhj3j9X8hAxYAgF1')
 
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'name' in session.keys():
-            return f(*args, **kwargs)
-        else:
-            return redirect(url_for('login'))
-    return wrap
-
-def logoff_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'name' not in session.keys():
-            return f(*args, **kwargs)
-        else:
-            return redirect(url_for('index'))
-    return wrap
 
 @app.route("/")
 @login_required
 def index():
     return redirect(url_for('dashboard'))
+
 
 @app.route("/dashboard")
 @login_required
@@ -61,6 +47,7 @@ def dashboard():
         dashboard_content=dashboard_content,
         curr_date=datetime.today().strftime("%A, %d %B %Y")
     )
+
 
 @app.route("/register", methods=['GET', 'POST'])
 @logoff_required
@@ -80,6 +67,7 @@ def register():
             return redirect(url_for('register'))
     return render_template('register.html')
 
+
 @app.route("/login", methods=['GET', 'POST'])
 @logoff_required
 def login():
@@ -96,6 +84,7 @@ def login():
             return render_template('login.html')
     return render_template('login.html')
 
+
 @app.route('/movies/<int:movie_id>/like')
 @login_required
 def select_movies(movie_id):
@@ -103,6 +92,7 @@ def select_movies(movie_id):
     msg, category = load_movies.select_movies(user_id, movie_id)
     flash(msg, category)
     return redirect(url_for('dashboard'))
+
 
 @app.route('/user/profile')
 @login_required
@@ -117,12 +107,14 @@ def user():
         following=following
     )
 
+
 @app.route('/user/following')
 @login_required
 def user_following():
     user_details = handle_login.login_details(session.get('name'))
     following = handle_connection.get_following(user_details.get('id'))
     return render_template('following.html', following=following)
+
 
 @app.route('/user/followers')
 @login_required
@@ -136,6 +128,7 @@ def user_followers():
         followers=followers,
         following_id_list=following_id_list)
 
+
 @app.route('/user/follow/<username>')
 @login_required
 def follow_user(username):
@@ -148,6 +141,7 @@ def follow_user(username):
     flash(msg, err)
     return redirect(url_for('user_following'))
 
+
 @app.route('/user/unfollow/<username>')
 @login_required
 def unfollow_user(username):
@@ -156,6 +150,7 @@ def unfollow_user(username):
     msg, err = handle_connection.unfollow(user_id, following_id)
     flash(msg, err)
     return redirect(url_for('user_following'))
+
 
 @app.route('/user/edit', methods=['GET', 'POST'])
 @login_required
@@ -173,12 +168,14 @@ def edit_user():
     user_details = handle_login.login_details(session.get('name'))
     return render_template('edit-user-profile.html', user_details=user_details)
 
+
 @app.route('/logout/')
 @login_required
 def logout():
     session.clear()
     flash('Logged out successfully!', 'success')
     return redirect(url_for('login'))
+
 
 @app.route("/movies/")
 @app.route("/movies/<string:category>")
@@ -192,6 +189,7 @@ def movies(category="imdb"):
         category=category,
         user_object=user_details
     )
+
 
 @app.route("/movie/<string:category>/<int:id>")
 @login_required
@@ -207,6 +205,7 @@ def movie_details(category, id):
         user_object=user_details
     )
 
+
 @app.route("/search/movies")
 @login_required
 def search_movies():
@@ -215,9 +214,11 @@ def search_movies():
     movies = load_movies.search_movie(category, title)
     return render_template('search.html', movies=movies, category=category)
 
+
 @app.route("/<string:username>")
 def user_profile_shortcut(username):
     return redirect(url_for('public_user_profile', username=username))
+
 
 @app.route("/users/<string:username>")
 def public_user_profile(username):
@@ -251,9 +252,11 @@ def public_user_profile(username):
         is_current_user=is_current_user
     )
 
+
 @app.errorhandler(404)
 def error(error):
     return render_template("sorry.html"), 404
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
