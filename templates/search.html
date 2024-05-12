@@ -11,7 +11,7 @@
                   {% set message_class = 'is-info' %}
               {% endif %}
                   <div class="notification {{ message_class }} ">
-                      {{ message }} 
+                      {{ message }}
                   </div>
           {% endfor %}
       {% endif %}
@@ -19,8 +19,8 @@
 
   {% if movies %}
     <h3 class="title is-3">
-      {{movies | length}} 
-      {% if movies | length == 1 %} 
+      {{movies | length}}
+      {% if movies | length == 1 %}
       movie
       {% else %}
       movies
@@ -41,7 +41,7 @@
                 <a href="{{url_for('movie_details', category=category, id=movie.id)}}">
                     <strong>{{movie.title}}</strong>
                 </a>
-                <small>{{movie.director}}</small> 
+                <small>{{movie.director}}</small>
                 <br>
                 {{movie.genre}}
                 <br>
@@ -51,8 +51,8 @@
             <nav class="level is-mobile">
               {% if category == 'imdb' %}
               <div class="level-left">
-                <a class="level-item" aria-label="like" 
-                  href="{{url_for('select_movies', 
+                <a class="level-item" aria-label="like"
+                  href="{{url_for('select_movies',
                         movie_id=movie.id)}}">
                   <span class="icon is-small">
                     <i class="fas fa-heart" aria-hidden="true"></i>
