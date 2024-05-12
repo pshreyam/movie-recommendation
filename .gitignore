@@ -5,3 +5,4 @@ __pycache__/
 .vim
 .flaskenv
 profile_pics
+.python-version
