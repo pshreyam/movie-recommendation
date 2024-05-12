@@ -13,10 +13,11 @@ def login(username, password):
     user_record = cursor.fetchone()
 
     if not user_record:
-        return False, "Invalid Credentials!"
-    db_password = user_record['pass']
+        return False, "The user with that username does not exist!"
+
+    db_password = user_record["pass"]
     if not check_password_hash(db_password, password):
-        return False, "Invalid Credentials!"
+        return False, "The credentials you have supplied is invalid!"
 
     conn.close()
 

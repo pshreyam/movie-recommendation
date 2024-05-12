@@ -11,7 +11,7 @@
             {% set message_class = 'is-danger' %}
           {% endif %}
             <div class="notification {{ message_class }} ">
-              {{ message }} 
+              {{ message }}
             </div>
         {% endfor %}
       {% endif %}
@@ -94,11 +94,11 @@
         <div class="media-content">
             <div class="content">
             <p>
-                <a href="{{url_for('movie_details', 
+                <a href="{{url_for('movie_details',
                     category='imdb', id=movie.id)}}">
                     <strong>{{movie.title}}</strong>
                 </a>
-                <small>{{movie.director}}</small> 
+                <small>{{movie.director}}</small>
                 <br>
                 {{movie.genre}}
                 <br>

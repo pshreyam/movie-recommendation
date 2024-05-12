@@ -32,22 +32,22 @@ def follow(user_id, other_id):
     Follows People With other_id for People With user_id.
     """
     if user_id == other_id:
-        return 'You cannot perform this action!', 'error'
+        return "You cannot perform this action!", "error"
     conn = connect_to_db()
     cursor = conn.cursor(dictionary=True)
-    sql = f"""SELECT * FROM connect 
+    sql = f"""SELECT * FROM connect
             WHERE follower = {user_id} AND following = {other_id} ORDER BY connect_id"""
     cursor.execute(sql)
     existing = cursor.fetchone()
     if existing:
         conn.commit()
         conn.close()
-        return 'Already followed user!', 'info'
+        return "Already followed user!", "info"
     sql = f"""INSERT INTO connect (follower, following) VALUES({user_id},{other_id})"""
     cursor.execute(sql)
     conn.commit()
     conn.close()
-    return 'Successfully followed user!', 'success'
+    return "Successfully followed user!", "success"
 
 
 def unfollow(user_id, other_id):
@@ -55,20 +55,20 @@ def unfollow(user_id, other_id):
     Unfollows People With other_id for People With user_id.
     """
     if user_id == other_id:
-        return 'You cannot perform this action!', 'error'
+        return "You cannot perform this action!", "error"
     conn = connect_to_db()
     cursor = conn.cursor(dictionary=True)
-    sql = f"""SELECT * FROM connect 
+    sql = f"""SELECT * FROM connect
             WHERE follower = {user_id} AND following = {other_id} ORDER BY connect_id"""
     cursor.execute(sql)
     existing = cursor.fetchone()
     if not existing:
         conn.commit()
         conn.close()
-        return 'No user with that account!', 'error'
-    sql = f"""DELETE FROM connect 
+        return "No user with that account!", "error"
+    sql = f"""DELETE FROM connect
             WHERE follower = {user_id} AND following = {other_id}"""
     cursor.execute(sql)
     conn.commit()
     conn.close()
-    return 'Successfully unfollowed user!', 'success'
+    return "Successfully unfollowed user!", "success"
