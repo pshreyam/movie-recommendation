@@ -32,7 +32,7 @@
                 {% set message_class = 'is-info' %}
             {% endif %}
                 <div class="notification {{ message_class }} ">
-                    {{ message }} 
+                    {{ message }}
                 </div>
         {% endfor %}
     {% endif %}
@@ -54,11 +54,11 @@
         <div class="media-content">
             <div class="content">
             <p>
-                <a href="{{url_for('movie_details', 
+                <a href="{{url_for('movie_details',
                     category=dashboard_content.userSelect_category.lower(), id=movie.id)}}">
                     <strong>{{movie.title}}</strong>
                 </a>
-                <small>{{movie.director}}</small> 
+                <small>{{movie.director}}</small>
                 <br>
                 {{movie.genre}}
                 <br>
@@ -96,11 +96,11 @@
     <div class="media-content">
         <div class="content">
         <p>
-            <a href="{{url_for('movie_details', 
+            <a href="{{url_for('movie_details',
                 category=dashboard_content.primary_category.lower(), id=movie.id)}}">
                 <strong>{{movie.title}}</strong>
             </a>
-            <small>{{movie.director}}</small> 
+            <small>{{movie.director}}</small>
             <br>
             {{movie.genre}}
             <br>
@@ -110,7 +110,7 @@
         <nav class="level is-mobile">
         {% if dashboard_content.primary_category.lower() == 'imdb'%}
         <div class="level-left">
-            <a class="level-item" aria-label="like" 
+            <a class="level-item" aria-label="like"
             href="{{url_for('select_movies', movie_id=movie.id)}}">
             <span class="icon is-small">
                 <i class="fas fa-heart" aria-hidden="true"></i>
@@ -140,11 +140,11 @@
         <div class="media-content">
             <div class="content">
             <p>
-                <a href="{{url_for('movie_details', 
+                <a href="{{url_for('movie_details',
                     category=dashboard_content.default_category.lower(), id=movie.id)}}">
                     <strong>{{movie.title}}</strong>
                 </a>
-                <small>{{movie.director}}</small> 
+                <small>{{movie.director}}</small>
                 <br>
                 {{movie.genre}}
                 <br>
@@ -153,7 +153,7 @@
             </div>
             <nav class="level is-mobile">
             <div class="level-left">
-                <a class="level-item" aria-label="like" 
+                <a class="level-item" aria-label="like"
                 href="{{url_for('select_movies', movie_id=movie.id)}}">
                 <span class="icon is-small">
                     <i class="fas fa-heart" aria-hidden="true"></i>
@@ -183,11 +183,11 @@
     <div class="media-content">
         <div class="content">
         <p>
-            <a href="{{url_for('movie_details', 
+            <a href="{{url_for('movie_details',
                 category=dashboard_content.secondary_category.lower(), id=movie.id)}}">
                 <strong>{{movie.title}}</strong>
             </a>
-            <small>{{movie.director}}</small> 
+            <small>{{movie.director}}</small>
             <br>
             {{movie.genre}}
             <br>

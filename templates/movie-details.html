@@ -22,12 +22,12 @@
           <p class="title is-4">{{movie.title}} ({{movie.year}})</p>
           <p class="subtitle is-6">{{movie.director}}</p>
         </div>
-      </div>  
+      </div>
       <br>
       <div class="content">
-        {{movie.synopsis}} 
+        {{movie.synopsis}}
       </div>
-      
+
       {% if movie.trailerurl or movie.movieurl %}
         <div class="tags">
 
@@ -42,7 +42,7 @@
               <span class="tag is-danger is-medium">Movie</span>
             </a>
           {% endif %}
-          
+
         </div>
       {% endif %}
 
@@ -59,8 +59,8 @@
         <span class="tag is-info is-success is-medium">Like</span>
         <span class="tag is-primary is-medium">
               <span class="level-left">
-                <a class="level-item" aria-label="like" 
-                  href="{{url_for('select_movies', 
+                <a class="level-item" aria-label="like"
+                  href="{{url_for('select_movies',
                         movie_id=movie.id)}}">
                   <span class="icon is-small">
                     <i class="fas fa-heart has-text-danger" aria-hidden="true"></i>
@@ -70,7 +70,7 @@
         </span>
       </div>
       {% endif %}
-      
+
     </div>
   </div>
 {%endblock%}
