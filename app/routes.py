@@ -3,11 +3,8 @@ import os
 from datetime import datetime
 
 from flask import (
-    Flask,
     abort,
     flash,
-    jsonify,
-    make_response,
     redirect,
     render_template,
     request,
@@ -16,12 +13,9 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
-from db import handle_connection, handle_login, handle_register, load_movies
-from decorators import login_required, logoff_required
-
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "hhj3j9X8hAxYAgF1")
-app.config["PROFILE_PIC_FOLDER"] = "static/profile_pics"
+from app.db import handle_connection, handle_login, handle_register, load_movies
+from app.decorators import login_required, logoff_required
+from app.main import app
 
 
 @app.route("/")
@@ -221,14 +215,6 @@ def search_movies():
     return render_template("search.html", movies=movies, category=category)
 
 
-# @app.route("/@<string:username>")
-# def user_profile_shortcut(username):
-#     return redirect(url_for('public_user_profile', username=username))
-#
-#
-# @app.route("/users/@<string:username>")
-
-
 @app.route("/@<string:username>")
 def public_user_profile(username):
     user_details = handle_login.login_details(username)
@@ -239,16 +225,15 @@ def public_user_profile(username):
     followers = len(handle_connection.get_followers(user_id))
     following = len(handle_connection.get_following(user_id))
     movies_liked = load_movies.get_user_selected_movies(user_id)
+
+    is_current_user = False
+    following_id_list = []
+
     if current_user:
         following_list = handle_connection.get_following(current_user.get("id"))
         following_id_list = list(map(lambda x: x.get("id"), following_list))
-        if current_user.get("username") == username:
-            is_current_user = True
-        else:
-            is_current_user = False
-    else:
-        is_current_user = False
-        following_id_list = []
+        is_current_user = current_user.get("username", "") == username
+
     return render_template(
         "public-user-profile.html",
         user_details=user_details,
@@ -261,9 +246,5 @@ def public_user_profile(username):
 
 
 @app.errorhandler(404)
-def error(error):
+def handle_errors(_):
     return render_template("404.html"), 404
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)

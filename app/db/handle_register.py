@@ -1,8 +1,7 @@
 import json
 
-from werkzeug.security import generate_password_hash
-
 from utils.string import is_empty
+from werkzeug.security import generate_password_hash
 
 from . import connect_to_db
 
