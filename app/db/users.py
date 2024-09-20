@@ -1,5 +1,6 @@
 import json
 
+from loguru import logger
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.utils.string import is_any_empty
@@ -16,7 +17,6 @@ def register_user(user):
     fullname = user.get("fullname", "").strip()
     gender = user.get("gender", "").strip()
     email = user.get("email", "").strip()
-    nationality = user.get("nationality", "").strip()
     password = user.get("password", "").strip()
     repassword = user.get("re_password", "").strip()
 
@@ -25,7 +25,6 @@ def register_user(user):
         fullname,
         gender,
         email,
-        nationality,
         password,
         repassword,
     ):
@@ -41,15 +40,13 @@ def register_user(user):
     cursor.execute(sql)
     existing_user = cursor.fetchone()
     if existing_user:
-        print(existing_user)
+        logger.info(existing_user)
         return False, "Username already exists!"
-
     sql = (
         "INSERT INTO user (id, username, fullname,"
-        "email, gender, password, nationality) VALUES"
+        "email, gender, password) VALUES"
         f"(NULL, '{username}', '{fullname}',"
-        f" '{email}', '{gender}', '{hashed_password}',"
-        f" '{nationality}');"
+        f" '{email}', '{gender}', '{hashed_password}');"
     )
 
     cursor.execute(sql)
@@ -66,10 +63,9 @@ def update_user_profile(user, username):
     fullname = user.get("fullname", "").strip()
     gender = user.get("gender", "").strip()
     email = user.get("email", "").strip()
-    nationality = user.get("nationality", "").strip()
     profile_pic = user.get("profile_pic", "").strip()
 
-    if is_any_empty(fullname, gender, email, nationality):
+    if is_any_empty(fullname, gender, email):
         return False, "One or more fields are empty!"
 
     sql = f"SELECT * FROM user WHERE username='{username}'"
@@ -82,8 +78,7 @@ def update_user_profile(user, username):
     sql = f"""UPDATE user
         SET fullname='{fullname}',
         email='{email}',
-        gender='{gender}',
-        nationality='{nationality}'
+        gender='{gender}'
         WHERE username='{username}'; """
 
     cursor.execute(sql)

@@ -3,11 +3,13 @@ import os
 from datetime import datetime
 
 from flask import abort, flash, redirect, render_template, request, session, url_for
+from loguru import logger
 from werkzeug.utils import secure_filename
 
 from app.app import app
 from app.db import connections, contents, users
 from app.decorators import login_required, logoff_required
+from app.services.cloudinary import upload_image_to_cloudinary
 
 
 @app.route("/")
@@ -132,8 +134,8 @@ def follow_user(username):
         return redirect(url_for("user_following"))
     user_id = users.fetch_login_details(session.get("name")).get("id")
     following_id = users.fetch_login_details(username).get("id")
-    msg, err = connections.follow(user_id, following_id)
-    flash(msg, err)
+    msg, error = connections.follow(user_id, following_id)
+    flash(msg, error)
     return redirect(url_for("user_following"))
 
 
@@ -142,29 +144,44 @@ def follow_user(username):
 def unfollow_user(username):
     user_id = users.fetch_login_details(session.get("name")).get("id")
     following_id = users.fetch_login_details(username).get("id")
-    msg, err = connections.unfollow(user_id, following_id)
-    flash(msg, err)
+    msg, error = connections.unfollow(user_id, following_id)
+    flash(msg, error)
     return redirect(url_for("user_following"))
 
 
 @app.route("/user/edit", methods=["GET", "POST"])
 @login_required
 def edit_user():
+    username = session.get("name", "")
+
     if request.method == "POST":
         data = dict(request.form)
         if "profile_pic" in request.files and request.files.get("profile_pic"):
             profile_pic = request.files.get("profile_pic")
             filename = secure_filename(profile_pic.filename)
-            profile_pic.save(os.path.join(app.config["PROFILE_PIC_FOLDER"], filename))
-            data["profile_pic"] = filename
-        is_updated, err = users.update_user_profile(data, session.get("name", ""))
-        if err:
-            flash(err, "error")
+            local_profile_pic_path = os.path.join(app.config["PROFILE_PIC_FOLDER"], filename)
+            profile_pic.save(local_profile_pic_path)
+            try:
+                profile_pic_path = upload_image_to_cloudinary(file_url=local_profile_pic_path, username=username)
+            except Exception as exc:
+                logger.warning(f"Failed uploading image to cloudinary for username `{username}`. | {str(exc)}")
+                data["profile_pic"] = ""
+            else:
+                # Once the profile_pic is uploaded to cloudinary, remove the file locally
+                if profile_pic_path:
+                    try:
+                        os.remove(local_profile_pic_path)
+                    except Exception as exc:
+                        logger.warning(f"Error deleting file: {local_profile_pic_path} | {str(exc)}")
+                data["profile_pic"] = profile_pic_path
+        is_updated, error = users.update_user_profile(user=data, username=username)
+        if error:
+            flash(error, "error")
         if is_updated:
             flash("Successfully updated profile!", "success")
             return redirect(url_for("user"))
         return redirect(url_for("edit_user"))
-    user_details = users.fetch_login_details(session.get("name"))
+    user_details = users.fetch_login_details(username=username)
     return render_template("edit-user-profile.html", user_details=user_details)
 
 
