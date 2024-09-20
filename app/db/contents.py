@@ -37,36 +37,18 @@ def get_user_content(user):
     """
     Get content for user dashboard using rule-based algo.
     """
-    # TODO: This sort of logic is not good. It was the first project. So,
-    # this is just for learning purpose. This has to be refactored.
+    # TODO: This logic has to be updated with better algo for recommending the movies.
     content = {}
-    nationality = user.get("nationality", "").lower()
-    gender = user.get("gender", "")
 
-    content["userSelect"] = get_user_selected_movies(user.get("id"))
-    content["userSelect_title"] = "Movies liked"
-    content["userSelect_category"] = "imdb"
+    content["user_selected"] = get_user_selected_movies(user.get("id"))
+    content["user_selected_title"] = "Movies liked"
+    content["user_selected_category"] = "imdb"
 
-    if nationality in {"nepalese", "nepali"}:
-        content["primary"] = load_movies("nepali")[:5]
-        content["primary_category"] = "Nepali"
-    elif nationality == "indian":
-        content["primary"] = load_movies("hindi")[:5]
-        content["primary_category"] = "Hindi"
-    else:
-        content["primary"] = load_movies("imdb")[:5]
-        content["primary_category"] = "Imdb"
+    content["primary"] = load_movies("nepali")[:5]
+    content["primary_category"] = "Nepali"
 
-    if gender == "M":
-        content["secondary"] = load_movies("action")[:5]
-        content["secondary_category"] = "Action"
-    else:
-        content["secondary"] = load_movies("musical")[:5]
-        content["secondary_category"] = "Musical"
-
-    if nationality in {"nepali", "nepalese", "indian"}:
-        content["default"] = load_movies("imdb")[:5]
-        content["default_category"] = "Imdb"
+    content["secondary"] = load_movies("action")[:5]
+    content["secondary_category"] = "Action"
 
     return content
 
